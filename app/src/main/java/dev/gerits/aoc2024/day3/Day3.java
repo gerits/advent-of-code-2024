@@ -2,8 +2,6 @@ package dev.gerits.aoc2024.day3;
 
 import dev.gerits.aoc2024.AdventDay;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
@@ -15,7 +13,7 @@ public class Day3 implements AdventDay {
     private static final Pattern REGEX_PART_2 = Pattern.compile("(don't\\(\\)|do\\(\\)|mul\\(([0-9]{1,3}),([0-9]{1,3})\\))");
 
     public static void main(String[] args) throws Exception {
-       new Day3().run();
+        new Day3().run();
     }
 
     @Override

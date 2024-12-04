@@ -3,6 +3,7 @@ package dev.gerits.aoc2024;
 import dev.gerits.aoc2024.day1.Day1;
 import dev.gerits.aoc2024.day2.Day2;
 import dev.gerits.aoc2024.day3.Day3;
+import dev.gerits.aoc2024.day4.Day4;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
@@ -13,7 +14,8 @@ public class App {
     private static Map<String, AdventDay> DAYS = Map.of(
             "1", new Day1(),
             "2", new Day2(),
-            "3", new Day3()
+            "3", new Day3(),
+            "4", new Day4()
     );
 
     public static void main(String[] args) throws Exception {
