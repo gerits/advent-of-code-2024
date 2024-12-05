@@ -4,6 +4,7 @@ import dev.gerits.aoc2024.day1.Day1;
 import dev.gerits.aoc2024.day2.Day2;
 import dev.gerits.aoc2024.day3.Day3;
 import dev.gerits.aoc2024.day4.Day4;
+import dev.gerits.aoc2024.day5.Day5;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
@@ -15,7 +16,8 @@ public class App {
             "1", new Day1(),
             "2", new Day2(),
             "3", new Day3(),
-            "4", new Day4()
+            "4", new Day4(),
+            "5", new Day5()
     );
 
     public static void main(String[] args) throws Exception {
