@@ -1,6 +1,7 @@
 package dev.gerits.aoc2024;
 
 import dev.gerits.aoc2024.day1.Day1;
+import dev.gerits.aoc2024.day10.Day10;
 import dev.gerits.aoc2024.day2.Day2;
 import dev.gerits.aoc2024.day3.Day3;
 import dev.gerits.aoc2024.day4.Day4;
@@ -25,7 +26,8 @@ public class App {
             "6", new Day6(),
             "7", new Day7(),
             "8", new Day8(),
-            "9", new Day9()
+            "9", new Day9(),
+            "10", new Day10()
     );
 
     public static void main(String[] args) throws Exception {
