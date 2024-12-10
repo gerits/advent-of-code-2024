@@ -6,6 +6,9 @@ import dev.gerits.aoc2024.day3.Day3;
 import dev.gerits.aoc2024.day4.Day4;
 import dev.gerits.aoc2024.day5.Day5;
 import dev.gerits.aoc2024.day6.Day6;
+import dev.gerits.aoc2024.day7.Day7;
+import dev.gerits.aoc2024.day8.Day8;
+import dev.gerits.aoc2024.day9.Day9;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
@@ -19,7 +22,10 @@ public class App {
             "3", new Day3(),
             "4", new Day4(),
             "5", new Day5(),
-            "6", new Day6()
+            "6", new Day6(),
+            "7", new Day7(),
+            "8", new Day8(),
+            "9", new Day9()
     );
 
     public static void main(String[] args) throws Exception {
