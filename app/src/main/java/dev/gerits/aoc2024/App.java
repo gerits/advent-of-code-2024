@@ -2,6 +2,7 @@ package dev.gerits.aoc2024;
 
 import dev.gerits.aoc2024.day1.Day1;
 import dev.gerits.aoc2024.day10.Day10;
+import dev.gerits.aoc2024.day11.Day11;
 import dev.gerits.aoc2024.day2.Day2;
 import dev.gerits.aoc2024.day3.Day3;
 import dev.gerits.aoc2024.day4.Day4;
@@ -17,17 +18,18 @@ import org.apache.commons.cli.Options;
 import java.util.Map;
 
 public class App {
-    private static Map<String, AdventDay> DAYS = Map.of(
-            "1", new Day1(),
-            "2", new Day2(),
-            "3", new Day3(),
-            "4", new Day4(),
-            "5", new Day5(),
-            "6", new Day6(),
-            "7", new Day7(),
-            "8", new Day8(),
-            "9", new Day9(),
-            "10", new Day10()
+    private static Map<String, AdventDay> DAYS = Map.ofEntries(
+            Map.entry("1", new Day1()),
+            Map.entry("2", new Day2()),
+            Map.entry("3", new Day3()),
+            Map.entry("4", new Day4()),
+            Map.entry("5", new Day5()),
+            Map.entry("6", new Day6()),
+            Map.entry("7", new Day7()),
+            Map.entry("8", new Day8()),
+            Map.entry("9", new Day9()),
+            Map.entry("10", new Day10()),
+            Map.entry("11", new Day11())
     );
 
     public static void main(String[] args) throws Exception {
