@@ -5,7 +5,9 @@ import dev.gerits.aoc2024.AdventDay;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.IntStream;
 
 public class Day9 implements AdventDay {
@@ -25,11 +27,11 @@ public class Day9 implements AdventDay {
         long result = 0L;
 
         List<Long> values = new ArrayList<>();
-        Long index = 0L;
+        long index = 0L;
         for (int i = 0; i < input.length(); i++) {
             boolean isValue = i % 2 == 0;
 
-            Long finalIndex = index;
+            long finalIndex = index;
             IntStream.rangeClosed(0, Integer.parseInt(String.valueOf(input.charAt(i))) - 1)
                     .mapToObj(val -> isValue ? finalIndex : -1)
                     .forEach(values::add);
@@ -51,149 +53,84 @@ public class Day9 implements AdventDay {
     }
 
     private void part2(String input) {
-        List<Item> values = new ArrayList<>();
-        Long index = 0L;
-        for (int i = 0; i < input.length(); i++) {
-            boolean isValue = i % 2 == 0;
+        String string = convertToString(input);
 
-            long size = Long.parseLong(String.valueOf(input.charAt(i)));
-            if (isValue) {
-                values.add(new File(index, size));
-            } else {
-                values.add(new Space(size));
+        Set<Character> movedCharacters = new HashSet<>();
+        while (hasUnmovedCharacters(string, movedCharacters)) {
+            Range range = findLastUnmovedValue(string, movedCharacters);
+            char value = string.charAt(range.end());
+
+            int length = range.end() - range.start() + 1;
+            String spaceString = IntStream.range(0, length).mapToObj(i -> String.valueOf((char) 0)).reduce("", (a, b) -> a + b);
+
+            int i = string.indexOf(spaceString);
+            if (i == -1 || i > range.start()) {
+                movedCharacters.add(value);
+                continue;
             }
-            if (isValue) {
-                index++;
-            }
+            string = string.substring(0, i) +
+                    string.substring(range.start(), range.end() + 1) +
+                    string.substring(i + length, range.start()) +
+                    spaceString +
+                    string.substring(range.end() + 1);
+
+            movedCharacters.add(value);
         }
 
-        while (notAllFilesMoved(values)) {
-            int fileIndex = findLastNonMovedFile(values);
-            if (fileIndex == -1) {
+        long result = 0;
+        for (int i = 0; i < string.length(); i++) {
+            if (string.charAt(i) == (char) 0) {
                 continue;
             }
-            File file = (File) values.get(fileIndex);
-            int spaceOfSize = findSpaceOfSize(values, file.size);
-            file.isMoved = true;
-            if (spaceOfSize == -1 || spaceOfSize > fileIndex) {
-                continue;
-            }
-            Item space = values.get(spaceOfSize);
-            values.remove(file);
-            if (space.size.equals(file.size)) {
-                values.set(spaceOfSize, file);
-                values.add(fileIndex, new Space(file.size));
-                compactSpaces(values);
-                continue;
-            }
-            space.size -= file.size;
-            values.add(spaceOfSize, file);
-            values.add(fileIndex, new Space(file.size));
-
-            compactSpaces(values);
-        }
-
-        System.out.println("After:");
-        for (int i = 0; i < values.size(); i++) {
-            System.out.println("%d - %s".formatted(i, values.get(i).toString()));
-        }
-
-        long result = 0L;
-        Long counter = 0L;
-        for (Item item : values) {
-            if (item instanceof Space) {
-                counter += item.size;
-                continue;
-            }
-            for (int i = 0; i < item.size; i++) {
-                result += counter * ((File) item).id;
-                counter++;
-            }
+            result += i * (((long) string.charAt(i)) - 1);
         }
 
         System.out.printf("Answer part 2: %d%n", result);
     }
 
-    private void compactSpaces(List<Item> values) {
-        for (int i = values.size() - 2; i >= 0; i--) {
-            if (values.get(i) instanceof Space space1 && values.get(i + 1) instanceof Space space2) {
-                space1.size += space2.size;
-                values.remove(i + 1);
-            }
-            if (values.get(i) instanceof Space space) {
-                if (space.size == 0) {
-                    values.remove(i);
-                }
-            }
-        }
-    }
+    private String convertToString(String input) {
+        StringBuilder stringBuilder = new StringBuilder();
 
-    private int findLastNonMovedFile(List<Item> values) {
-        for (int i = values.size() - 1; i >= 0; i--) {
-            if (values.get(i) instanceof File file) {
-                if (!file.isMoved) {
-                    return i;
-                }
+        long index = 1;
+        for (int i = 0; i < input.length(); i++) {
+            boolean isValue = i % 2 == 0;
+
+            for (int j = 0; j < Character.getNumericValue(input.charAt(i)); j++) {
+                stringBuilder.append(isValue ? (char) index : (char) 0);
+            }
+            if (isValue) {
+                index++;
             }
         }
-        return -1;
+        return stringBuilder.toString();
     }
 
-    private boolean notAllFilesMoved(List<Item> values) {
-        return values.stream()
-                .filter(File.class::isInstance)
-                .anyMatch(item -> !item.isMoved);
+    private Range findLastUnmovedValue(String string, Set<Character> movedCharacters) {
+        int end = string.length() - 1;
+        while (string.charAt(end) == (char) 0 || movedCharacters.contains(string.charAt(end))) {
+            end--;
+        }
+        int start = end;
+        while (start - 1 > 0 && string.charAt(start - 1) == string.charAt(end)) {
+            start--;
+        }
+        return new Range(start, end);
     }
 
-    private int findSpaceOfSize(List<Item> values, Long size) {
-        for (int i = 0; i < values.size(); i++) {
-            Item item = values.get(i);
-            if (item instanceof Space) {
-                if (item.size >= size) {
-                    return i;
-                }
+    private boolean hasUnmovedCharacters(String string, Set<Character> movedCharachters) {
+        for (int i = 0; i < string.length(); i++) {
+            char c = string.charAt(i);
+            if (c == (char) 0) {
+                continue;
             }
+            if (movedCharachters.contains(c)) {
+                continue;
+            }
+            return true;
         }
-        return -1;
+        return false;
     }
 
-    private abstract class Item {
-        public Long size;
-        public boolean isMoved;
-
-        public Item(Long size, boolean isMoved) {
-            this.size = size;
-            this.isMoved = isMoved;
-        }
-
-        @Override
-        public String toString() {
-            return size.toString();
-        }
-    }
-
-    private class File extends Item {
-        public Long id;
-
-        public File(Long id, Long size) {
-            super(size, false);
-            this.id = id;
-        }
-
-        @Override
-        public String toString() {
-            return "file: %d - %s".formatted(id, super.toString());
-        }
-    }
-
-    private class Space extends Item {
-        public Space(Long size) {
-            super(size, false);
-        }
-
-        @Override
-        public String toString() {
-            return "space: %s".formatted(super.toString());
-        }
+    private record Range(int start, int end) {
     }
 }
