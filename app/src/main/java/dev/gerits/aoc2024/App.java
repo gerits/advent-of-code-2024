@@ -3,6 +3,7 @@ package dev.gerits.aoc2024;
 import dev.gerits.aoc2024.day1.Day1;
 import dev.gerits.aoc2024.day10.Day10;
 import dev.gerits.aoc2024.day11.Day11;
+import dev.gerits.aoc2024.day12.Day12;
 import dev.gerits.aoc2024.day2.Day2;
 import dev.gerits.aoc2024.day3.Day3;
 import dev.gerits.aoc2024.day4.Day4;
@@ -29,7 +30,8 @@ public class App {
             Map.entry("8", new Day8()),
             Map.entry("9", new Day9()),
             Map.entry("10", new Day10()),
-            Map.entry("11", new Day11())
+            Map.entry("11", new Day11()),
+            Map.entry("12", new Day12())
     );
 
     public static void main(String[] args) throws Exception {
