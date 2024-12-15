@@ -1,6 +1,7 @@
 package dev.gerits.aoc2024.day13;
 
 import dev.gerits.aoc2024.AdventDay;
+import dev.gerits.aoc2024.common.Position;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -105,18 +106,6 @@ public class Day13 implements AdventDay {
             Position buttonA,
             Position buttonB,
             Position prize
-    ) {
-    }
-
-    public record Position(
-            int x,
-            int y
-    ) {
-    }
-
-    public record PushResult(
-            int a,
-            int b
     ) {
     }
 }
