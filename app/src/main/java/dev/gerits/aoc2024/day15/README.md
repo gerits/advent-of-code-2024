@@ -403,3 +403,7 @@ In the scaled-up version of the larger example from above, after the robot has f
 The sum of these boxes' GPS coordinates is 9021.
 
 Predict the motion of the robot and boxes in this new, scaled-up warehouse. What is the sum of all boxes' final GPS coordinates?
+
+Your puzzle answer was 1457703.
+
+Both parts of this puzzle are complete! They provide two gold stars: **

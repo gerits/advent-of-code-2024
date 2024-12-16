@@ -10,6 +10,8 @@ import java.util.List;
 
 public class Day15 implements AdventDay {
 
+    public static final List<Direction> VERTICAL_DIRECTIONS = List.of(Direction.UP, Direction.DOWN);
+
     public static void main(String[] args) throws Exception {
         new Day15().run();
     }
@@ -18,6 +20,11 @@ public class Day15 implements AdventDay {
     public void run() throws Exception {
         List<String> data = Files.readAllLines(Path.of(Day15.class.getResource("input.txt").toURI()));
 
+        part1(data);
+        part2(data);
+    }
+
+    private void part1(List<String> data) {
         int gridHeight = findGridHeight(data);
         Grid grid = parseGrid(data.getFirst().length(), gridHeight, data);
         List<Direction> moves = parseMoves(data);
@@ -26,6 +33,27 @@ public class Day15 implements AdventDay {
         System.out.println(grid);
 
         System.out.printf("Result part 1: %d%n", grid.countValueOfBoxes());
+    }
+
+    private void part2(List<String> data) {
+        List<String> scaled = new ArrayList<>();
+        for (String line : data) {
+            scaled.add(line
+                    .replaceAll("#", "##")
+                    .replaceAll("\\.", "..")
+                    .replaceAll("@", "@.")
+                    .replaceAll("O", "[]"));
+        }
+
+        int gridHeight = findGridHeight(scaled);
+        Grid grid = parseGrid(scaled.getFirst().length(), gridHeight, scaled);
+        System.out.println(grid);
+        List<Direction> moves = parseMoves(scaled);
+
+        moves.forEach(grid::moveRobot);
+        System.out.println(grid);
+
+        System.out.printf("Result part 2: %d%n", grid.countValueOfBoxesLeft());
     }
 
     private List<Direction> parseMoves(List<String> data) {
@@ -63,6 +91,12 @@ public class Day15 implements AdventDay {
                     case 'O':
                         grid.set(x, y, new Box());
                         continue;
+                    case '[':
+                        grid.set(x, y, new BoxLeft());
+                        continue;
+                    case ']':
+                        grid.set(x, y, new BoxRight());
+                        continue;
                     case '@':
                         grid.setRobot(x, y);
                         continue;
@@ -76,7 +110,7 @@ public class Day15 implements AdventDay {
 
     private int findGridHeight(List<String> data) {
         for (int i = 0; i < data.size(); i++) {
-            if (data.get(i).isEmpty()) {
+            if (data.get(i).isBlank()) {
                 return i;
             }
         }
@@ -99,12 +133,15 @@ public class Day15 implements AdventDay {
         }
     }
 
+    private interface Item {
+    }
+
     private class Grid {
         private Item[][] grid;
         private Position robotPosition;
 
         public Grid(int width, int height) {
-            grid = new Item[width][height];
+            grid = new Item[height][width];
         }
 
         public void moveRobot(Direction direction) {
@@ -127,14 +164,37 @@ public class Day15 implements AdventDay {
             return true;
         }
 
+        private boolean canMoveItem(int originalX, int originalY, Direction direction) {
+            int targetY = originalY + direction.y;
+            int targetX = originalX + direction.x;
+
+            if (VERTICAL_DIRECTIONS.contains(direction) && grid[targetY][targetX] instanceof BoxLeft) {
+                return canMoveItem(targetX, targetY, direction) && canMoveItem(targetX + 1, targetY, direction);
+            } else if (VERTICAL_DIRECTIONS.contains(direction) && grid[targetY][targetX] instanceof BoxRight) {
+                return canMoveItem(targetX, targetY, direction) && canMoveItem(targetX - 1, targetY, direction);
+            } else if (grid[targetY][targetX] instanceof Box) {
+                return canMoveItem(targetX, targetY, direction);
+            } else {
+                return !(grid[targetY][targetX] instanceof Wall);
+            }
+        }
+
         private boolean isFreeOrMovedBox(int targetX, int targetY, Direction direction) {
-            if (grid[targetY][targetX] instanceof Box) {
-                return moveItem(targetX, targetY, direction);
-            }
-            if (grid[targetY][targetX] instanceof Wall) {
+            if (VERTICAL_DIRECTIONS.contains(direction) && grid[targetY][targetX] instanceof BoxLeft) {
+                if (canMoveItem(targetX, targetY, direction) && canMoveItem(targetX + 1, targetY, direction)) {
+                    return moveItem(targetX, targetY, direction) && moveItem(targetX + 1, targetY, direction);
+                }
                 return false;
+            } else if (VERTICAL_DIRECTIONS.contains(direction) && grid[targetY][targetX] instanceof BoxRight) {
+                if (canMoveItem(targetX, targetY, direction) && canMoveItem(targetX - 1, targetY, direction)) {
+                    return moveItem(targetX, targetY, direction) && moveItem(targetX - 1, targetY, direction);
+                }
+                return false;
+            } else if (grid[targetY][targetX] instanceof Box) {
+                return moveItem(targetX, targetY, direction);
+            } else {
+                return !(grid[targetY][targetX] instanceof Wall);
             }
-            return true;
         }
 
         public void set(int x, int y, Item item) {
@@ -151,6 +211,18 @@ public class Day15 implements AdventDay {
             for (int y = 0; y < grid.length; y++) {
                 for (int x = 0; x < grid[0].length; x++) {
                     if (grid[y][x] instanceof Box) {
+                        result += (100 * y) + x;
+                    }
+                }
+            }
+            return result;
+        }
+
+        public int countValueOfBoxesLeft() {
+            int result = 0;
+            for (int y = 0; y < grid.length; y++) {
+                for (int x = 0; x < grid[0].length; x++) {
+                    if (grid[y][x] instanceof BoxLeft) {
                         result += (100 * y) + x;
                     }
                 }
@@ -175,9 +247,6 @@ public class Day15 implements AdventDay {
         }
     }
 
-    private interface Item {
-    }
-
     private class Wall implements Item {
         @Override
         public String toString() {
@@ -197,6 +266,20 @@ public class Day15 implements AdventDay {
         @Override
         public String toString() {
             return "O";
+        }
+    }
+
+    private class BoxLeft extends Box {
+        @Override
+        public String toString() {
+            return "[";
+        }
+    }
+
+    private class BoxRight extends Box {
+        @Override
+        public String toString() {
+            return "]";
         }
     }
 
