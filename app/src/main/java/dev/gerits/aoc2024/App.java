@@ -8,6 +8,9 @@ import dev.gerits.aoc2024.day13.Day13;
 import dev.gerits.aoc2024.day14.Day14;
 import dev.gerits.aoc2024.day15.Day15;
 import dev.gerits.aoc2024.day16.Day16;
+import dev.gerits.aoc2024.day17.Day17;
+import dev.gerits.aoc2024.day18.Day18;
+import dev.gerits.aoc2024.day19.Day19;
 import dev.gerits.aoc2024.day2.Day2;
 import dev.gerits.aoc2024.day3.Day3;
 import dev.gerits.aoc2024.day4.Day4;
@@ -39,7 +42,10 @@ public class App {
             Map.entry("13", new Day13()),
             Map.entry("14", new Day14()),
             Map.entry("15", new Day15()),
-            Map.entry("16", new Day16())
+            Map.entry("16", new Day16()),
+            Map.entry("17", new Day17()),
+            Map.entry("18", new Day18()),
+            Map.entry("19", new Day19())
     );
 
     public static void main(String[] args) throws Exception {
