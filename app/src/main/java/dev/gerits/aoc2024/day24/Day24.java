@@ -5,59 +5,9 @@ import dev.gerits.aoc2024.AdventDay;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 
 public class Day24 implements AdventDay {
-
-    public static final String EXAMPLE = """
-            x00: 1
-            x01: 0
-            x02: 1
-            x03: 1
-            x04: 0
-            y00: 1
-            y01: 1
-            y02: 1
-            y03: 1
-            y04: 1
-            
-            ntg XOR fgs -> mjb
-            y02 OR x01 -> tnw
-            kwq OR kpj -> z05
-            x00 OR x03 -> fst
-            tgd XOR rvg -> z01
-            vdt OR tnw -> bfw
-            bfw AND frj -> z10
-            ffh OR nrd -> bqk
-            y00 AND y03 -> djm
-            y03 OR y00 -> psh
-            bqk OR frj -> z08
-            tnw OR fst -> frj
-            gnj AND tgd -> z11
-            bfw XOR mjb -> z00
-            x03 OR x00 -> vdt
-            gnj AND wpb -> z02
-            x04 AND y00 -> kjc
-            djm OR pbm -> qhw
-            nrd AND vdt -> hwm
-            kjc AND fst -> rvg
-            y04 OR y02 -> fgs
-            y01 AND x02 -> pbm
-            ntg OR kjc -> kwq
-            psh XOR fgs -> tgd
-            qhw XOR tgd -> z09
-            pbm OR djm -> kpj
-            x03 XOR y03 -> ffh
-            x00 XOR y04 -> ntg
-            bfw OR bqk -> z06
-            nrd XOR fgs -> wpb
-            frj XOR qhw -> z04
-            bqk OR frj -> z07
-            y03 OR x01 -> nrd
-            hwm AND bqk -> z03
-            tgd XOR rvg -> z12
-            tnw OR pbm -> gnj
-            """;
 
     public static void main(String[] args) throws Exception {
         new Day24().run();
@@ -65,7 +15,6 @@ public class Day24 implements AdventDay {
 
     @Override
     public void run() throws Exception {
-//        List<String> input = EXAMPLE.lines().toList();
         List<String> input = Files.readAllLines(Path.of(Day24.class.getResource("input.txt").toURI()));
 
         Map<String, Boolean> inputWires = new HashMap<>();
@@ -77,10 +26,6 @@ public class Day24 implements AdventDay {
         for (Map.Entry<String, Boolean> inputWire : inputWires.entrySet()) {
             processWire(inputWire.getKey(), inputWire.getValue(), processors, outputWires);
         }
-
-        System.out.println(outputWires.entrySet().stream()
-                .sorted((a, b) -> b.getKey().compareTo(a.getKey()))
-                .toList());
 
         String result = outputWires.entrySet().stream()
                 .sorted((a, b) -> b.getKey().compareTo(a.getKey()))
@@ -143,9 +88,9 @@ public class Day24 implements AdventDay {
         OR((a, b) -> a || b),
         XOR((a, b) -> a ^ b);
 
-        private BiFunction<Boolean, Boolean, Boolean> operation;
+        private final BinaryOperator<Boolean> operation;
 
-        Operator(BiFunction<Boolean, Boolean, Boolean> operations) {
+        Operator(BinaryOperator<Boolean> operations) {
             this.operation = operations;
         }
 
@@ -154,7 +99,7 @@ public class Day24 implements AdventDay {
         }
     }
 
-    private class Processor {
+    private static class Processor {
         private final String inputWire1;
         private final String inputWire2;
         private final Operator operator;
@@ -162,7 +107,6 @@ public class Day24 implements AdventDay {
 
         private Boolean valueWire1;
         private Boolean valueWire2;
-
 
         public Processor(
                 String inputWire1,
